@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>ワークフロー</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+
+  </style>
+</head>
+<body>
+  <h1>Workflow</h1>
+
+  <div>
+    <form method="get" action="/workflow/flow1">
+      <button type="submit" >休暇・遅刻・早退・欠勤届</button>
+    </form>
+
+    <form method="get" action="/workflow/flow2">
+      <button type="submit" >残業・休日出勤申請書</button>
+    </form>
+
+    <form method="get" action="/workflow/flow3">
+      <button type="submit" >タイムカード打刻ミス申請書</button>
+    </form>
+
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>状態</th>
+        <th>件名</th>
+        <th><div>申請者</div><div>申請日時</div></th>
+        <th>申請内容</th>
+
+      </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+      <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] or "" }}</td>
+        <td><div>{{ row[2] }}</div><div>{{ row[3] }}</div></td>
+        <td>{{ row[4] }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+
+
+</body>
+</html>

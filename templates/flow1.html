@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    select { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+    .danger { background: #ffecec; border: 1px solid #ffb8b8; }
+  </style>
+</head>
+
+<body>
+  <h1>休暇・遅刻・早退・欠勤届</h1>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for m in messages %}
+        <div class="flash">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+  <form id="form" method="post" action="/flow1/add">
+    <div>
+      <table>
+        <tbody>
+          <tr>
+            <td>件名</td>
+            <td><label><input name="title" type="text" required></label></td>
+          </tr>
+          <tr>
+            <td>申請者</td>
+            <td><label></label></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <label>申請日</label>
+      <label>
+        {% if form_data["requested_at"] %}
+          <input name="requested_at" type="date" value="{{ form_data['requested_at'] }}" required>
+        {% elif today %}
+          <input name="requested_at" type="date" value="{{ today }}" required>
+        {% else %}
+          <input name="requested_at" type="date" required>
+        {% endif %}
+      </label>
+    </div>
+
+    <div>
+      <label>所　属</label>
+      <label>
+        <select name="department" required>
+          <option value="">選択してください</option>
+          {% for name in departments %}
+          <option value="{{ name[0] }}"
+                    {% if form_data["department"] == name[0] %} selected {% endif %}>{{ name[0] }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+
+    <div>
+      <label>申請者</label>
+      <label>
+        {% if form_data["requested_by"] %}
+          <input name="requested_by" type="text" value="{{ form_data['requested_by'] }}" required>
+        {% else %}
+          <input name="requested_by" type="text" required>
+        {% endif %}
+
+      </label>
+    </div>
+
+    <div>
+      <label>下記の通り、申請致します。</label>
+      <table>
+        <thead>
+          <tr>
+            <th>管理部</th>
+            <th>管理者</th>
+            <th>申請者</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <tbody>
+        <tr>
+          <td>届出区分</td>
+          <td>
+            <label>
+                <select name="request_type" required>
+                  <option value="">選択してください</option>
+                  {% for r in request_type %}
+                    <option value="{{ r }}"
+                  {% if form_data["request_type"] == r %} selected {% endif %}
+                  >
+                  {{ r }}
+                  </option>
+                  {% endfor %}
+
+                </select>
+
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>発生日</td>
+          <td>
+            <label>
+              {% if form_data["start_day"] %}
+                <input name="start_day" type="date" value="{{ form_data['start_day'] }}" required>
+              {% else %}
+                <input name="start_day" type="date" required>
+              {% endif %}
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>終了日(日をまたぐ場合)</td>
+          <td>
+            <label>
+              {% if form_data["end_day"] %}
+                <input name="end_day" type="date" value="{{ form_data['end_day'] }}">
+              {% else %}
+                <input name="end_day" type="date">
+              {% endif %}
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>出勤時刻(遅刻の場合)</td>
+          <td>
+            <label>
+              {% if form_data["start_time"] %}
+                <input name="start_time" type="time" value="{{ form_data['start_time'] }}">
+              {% else %}
+                <input name="start_time" type="time">
+              {% endif %}
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>退勤時刻(早退の場合)</td>
+          <td>
+            <label>
+              {% if form_data["end_time"] %}
+                <input name="end_time" type="time" value="{{ form_data['end_time'] }}">
+              {% else %}
+                <input name="end_time" type="time">
+              {% endif %}
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>理由</td>
+          <td>
+            <label>
+              {% if form_data["reason"] %}
+                <input name="reason" type="text" value="{{ form_data['reason'] }}" required>
+              {% else %}
+                <input name="reason" type="text" required>
+              {% endif %}
+
+            </label>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button type="submit" name="act" value="save">進む</button>
+    <button type="submit" name="act" value="draft">下書き</button>
+
+    <button type="submit">キャンセル</button>
+
+  </form>
+
+  <script>
+  document.getElementById("form").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+          e.preventDefault();
+      }
+  });
+  </script>
+
+</body>
+</html>

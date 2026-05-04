@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>ルートマスタ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+    .danger { background: #ffecec; border: 1px solid #ffb8b8; }
+  </style>
+</head>
+<body>
+<h1>ルートマスタ</h1>
+
+  <div>
+    <form method="get" action="/route/editor">
+      <button type="submit">ルート追加</button>
+    </form>
+
+  </div>
+  <table>
+    <thead>
+    <tr>
+      <td>ルート名</td>
+      <td>最終更新者</td>
+      <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>
+          <label>{{ row.title }}</label>
+        </td>
+        <td>{{ row.creator }}</td>
+        <td>
+          <form method="get" action="/route/editor/{{ row.id }}">
+            <button type="submit">ルート編集</button>
+          </form>
+        </td>
+        <td>
+          <form method="post" action="/route/editor/delete/{{ row.id }}">
+            <button type="submit">ルート削除</button>
+          </form>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

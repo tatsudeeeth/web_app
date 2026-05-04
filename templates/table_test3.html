@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1" id="mainTable">
+  <tr>
+    <th>名前</th>
+    <th>設定</th>
+    <th>操作</th>
+  </tr>
+
+  <tr>
+    <td>田中</td>
+    <td class="subtable-cell">
+      <table class="subtable">
+        <tr></tr>
+      </table>
+      <input type="hidden" class="selected-items" name="selected_items[]">
+    </td>
+    <td>
+      <button type="button" onclick="openModal(this)">選択</button>
+    </td>
+  </tr>
+
+  <tr>
+    <td>佐藤</td>
+    <td class="subtable-cell">
+      <table class="subtable">
+        <tr></tr>
+      </table>
+      <input type="hidden" class="selected-items" name="selected_items[]">
+    </td>
+    <td>
+      <button type="button" onclick="openModal(this)">選択</button>
+    </td>
+  </tr>
+</table>
+
+<div id="modal" style="display:none; border:1px solid #333; padding:16px; background:#fff; position:fixed; top:20%; left:30%;">
+  <p>項目を選択</p>
+
+  <label><input type="checkbox" name="modal_item" value="A"> A</label>
+  <label><input type="checkbox" name="modal_item" value="B"> B</label>
+  <label><input type="checkbox" name="modal_item" value="C"> C</label>
+  <label><input type="checkbox" name="modal_item" value="D"> D</label>
+
+  <div style="margin-top:12px;">
+    <button type="button" onclick="applyModal()">決定</button>
+    <button type="button" onclick="closeModal()">閉じる</button>
+  </div>
+</div>
+
+<script>
+
+    let currentRow = null;
+
+function openModal(btn) {
+  currentRow = btn.closest("tr");
+
+  // 既存の選択値を復元したい場合
+  const hidden = currentRow.querySelector(".selected-items");
+  const savedValues = hidden.value ? JSON.parse(hidden.value) : [];
+
+  const checkboxes = document.querySelectorAll('#modal input[name="modal_item"]');
+  checkboxes.forEach(cb => {
+    cb.checked = savedValues.includes(cb.value);
+  });
+
+  document.getElementById("modal").style.display = "block";
+}
+
+function applyModal() {
+  if (!currentRow) return;
+
+  // 1. チェック済みの値を取得
+  const checkedBoxes = document.querySelectorAll('#modal input[name="modal_item"]:checked');
+  const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
+
+  // 2. 今編集中の行にあるテーブル2を取得
+  const subtable = currentRow.querySelector(".subtable");
+
+  // 3. テーブル2を描き直し
+  renderSubtable(subtable, selectedValues);
+
+  // 4. hiddenにも保存
+  currentRow.querySelector(".selected-items").value = JSON.stringify(selectedValues);
+
+  closeModal();
+}
+
+function renderSubtable(subtable, values) {
+  // 中身をいったん空にする
+  subtable.innerHTML = "";
+
+  // 行を1つ作る
+  const tr = document.createElement("tr");
+
+  // チェック数に応じて列追加
+  values.forEach(value => {
+    const td = document.createElement("td");
+    td.textContent = value;
+    tr.appendChild(td);
+  });
+
+  subtable.appendChild(tr);
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  currentRow = null;
+}
+</script>
+</body>
+</html>

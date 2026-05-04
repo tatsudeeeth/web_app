@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 6px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+    .danger { background: #ffecec; border: 1px solid #ffb8b8; }
+  </style>
+</head>
+<body>
+  <h1>table test2</h1>
+
+  <table>
+      <tbody id="tableBody">
+        <tr>
+            <td>
+                <button id="addRowButton" type="button" value="0" onclick="addRow()">行追加</button>
+                <button id="removeRowButton" type="button" onclick="deleteRow(this)">行削除</button>
+            </td>
+            <td>
+                <label>0</label>
+            </td>
+        </tr>
+      </tbody>
+  </table>
+
+
+    <script>
+
+        function addRow() {
+
+            const tbody = document.getElementById("tableBody");
+            const rowIndex = tbody.rows.length;
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>
+                    <button id="addRowButton" type="button" value="${rowIndex}" onclick="addRow()">行追加</button>
+                    <button id="removeRowButton" type="button" onclick="deleteRow(this)">行削除</button>
+                </td>
+
+                <td>
+                    <label>${rowIndex}</label>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function deleteRow(button) {
+            const tr = button.closest("tr");
+            tr.remove();
+            updateRowNumbers();
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll("#tableBody tr");
+            rows.forEach((row, index) => {
+                row.children[1].textContent = index;
+            });
+        }
+
+    </script>
+
+</body>
+</html>

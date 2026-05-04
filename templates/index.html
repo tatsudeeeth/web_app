@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+    .danger { background: #ffecec; border: 1px solid #ffb8b8; }
+  </style>
+</head>
+
+<body>
+  <h1>ACCいろいろHome</h1>
+
+    <form method="get" action="/info">
+        <button type="submit">info管理に移動</button>
+    </form>
+
+    <form method="get" action="/workflow">
+        <button type="submit">Workflowに移動</button>
+    </form>
+
+    <form method="get" action="/attendance">
+        <button type="submit">勤怠情報に移動</button>
+    </form>
+
+    <form method="get" action="/order">
+        <button type="submit">注文情報に移動</button>
+    </form>
+    <form method="get" action="/route">
+        <button type="submit">ルート設定</button>
+    </form>
+  <div>
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <table>
+                    <tbody>
+                    <tr>
+                    <td>
+                        <form method="post" action="/in_time">
+                            <button type="submit" >出社</button>
+                        </form>
+                        {{ begin }}
+                    </td>
+                    <td>
+                        <form method="post" action="/out_time">
+                            <button type="submit" >退社</button>
+                        </form>
+                        {{ end }}
+                    </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>更新日</th>
+                        <th>最新情報</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                    {% for updated_day, information in rows %}
+                    <tr>
+                        <td>{{ updated_day }}</td>
+                        <td>{{ information }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+
+  </style>
+</head>
+
+<body>
+
+  <h1>従業員一覧</h1>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for m in messages %}
+        <div class="flash">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div>
+      <table>
+          <thead>
+              <tr>
+                  <th>社員番号</th>
+                  <th>従業員名</th>
+                  <th>パスワード</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for row in rows %}
+              <tr>
+                  <td>{{ row[1] }}</td>
+                  <td>{{ row[2] }}</td>
+                  <td>
+                      <form method="post" action="/employee/password/{{ row[0] }}">
+                          <label><input type="password" name="password" required></label>
+                          <button type="submit">パスワード変更</button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+
+      </table>
+
+  </div>
+
+</body>
+</html>

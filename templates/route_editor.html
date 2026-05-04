@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>ルート設定</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+    input { padding: 8px; font-size: 14px; }
+    button { padding: 8px 12px; font-size: 14px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; text-align: left; }
+    .flash { background: #fff7d6; border: 1px solid #f0d36b; padding: 10px; margin: 12px 0; }
+    .danger { background: #ffecec; border: 1px solid #ffb8b8; }
+  </style>
+</head>
+<body>
+
+<h1>ルート設定</h1>
+
+  <form method="post" action="/route/editor/submit">
+    <label>経路名</label>
+    <label><input type="text" name="title" value="{{ rows1.title or '' }}"></label>
+    <input type="hidden" name="r_id" value='{{ rows1.id or "" }}'>
+      <div>
+    <table>
+      <tbody id="routeTable">
+
+      {% for row in rows2 %}
+        <tr>
+          <td>
+              <div>
+                  <button type="button" onclick="addRow()">+</button>
+                  <button type="button" onclick="deleteRow(this)">-</button>
+                  <span class="ordered">{{ row.ordered or '1' }}</span>
+              </div>
+              <div>
+                  <select name="rule[]" id="ruleType">
+                  {% for r in ["全体承認", "グループ承認"] %}
+                  <option value="{{ r }}"
+                  {% if row.rule == r %}
+                    selected
+                  {% endif %}
+                  >{{ r }}</option>
+                  {% endfor %}
+                  </select>
+              </div>
+          </td>
+          <td>
+              <button type="button" onclick="openModal(this)">編集</button>
+              <table class="subtable">
+                  {% if row.members %}
+                  <tr>
+                      {% for mem in row.members %}
+                      <td data-id="{{ mem.id }}">{{ mem.label }}</td>
+                      {% endfor %}
+                  </tr>
+                  {% endif %}
+              </table>
+              <input type="hidden" name="members[]" class="selected-members"
+                     {% if row.value %}
+                     value='{{ row.value | tojson }}'
+                     {% endif %}
+              >
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+      </div>
+
+
+    <div>
+    {% if rows1 %}
+      <button name="but" type="submit">更新</button>
+    {% else %}
+      <button name="but" type="submit">作成</button>
+    {% endif %}
+    <button name="but" type="button" onclick="location.href='/route'">キャンセル</button>
+    </div>
+
+  </form>
+
+  <div id="modalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3);">
+      <div style="width:400px; margin:100px auto; background:#fff; padding:20px;">
+          <h3>申請内容の選択</h3>
+
+          {% for id, name in employees %}
+          <div>
+              <label>
+                  <input type="checkbox" name="modal_member" value="{{ id }}" data-label="{{ name }}"> {{ name }}
+              </label>
+          </div>
+          {% endfor %}
+
+          <div style="margin-top:16px;">
+              <button type="button" onclick="applyModalValue()">反映</button>
+              <button type="button" onclick="closeModal()">閉じる</button>
+          </div>
+      </div>
+  </div>
+
+
+<script src="{{ url_for('static', filename='js/route_editor.js') }}"></script>
+
+</body>
+</html>
